@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+<head>
+<script type="text/javascript" src="paperjs-v0.9.25/dist/paper-full.js"></script>
+<script type="text/paperscript" canvas="Canvas">
+
+	var path = new Path();
+	path.strokeColor = 'grey';
+	//path.fillColor =  'red';
+	path.selected = true;
+
+  var SIZE = 20;
+	var RUN = 110;
+  var x = 600;
+	var y = 300;
+	var animation = 0;
+
+  var start = new Point(x, y);
+  path.add(start);
+
+	function onFrame(event) {
+		//path.fillColor.hue += 12;
+    randomWalk();
+		
+		animation++;
+		if(animation >= RUN)
+		{
+		  event.stop();
+		}
+	}
+
+  function randomWalk() {
+
+	  // randomise movements
+		var rnd = Math.floor((Math.random() * 4) + 1); 
+
+		//SIZE = 20 + Math.floor((Math.random() * 11) + 1);
+		switch (rnd) 
+		{
+			// LEFT
+			case 1: 
+				x = x - SIZE;
+				break;
+			// RIGHT
+			case 2:
+				x = x + SIZE;
+				break;
+			// UP
+			case 3:
+				y = y + SIZE;
+				break;
+			// DOWN
+			case 4:
+				y = y - SIZE;
+				break;
+		}
+
+	  var next = new Point(x, y);
+ 	 	path.add(next);
+	}
+
+</script>
+
+</head>
+	<body>
+		<canvas id="Canvas"  width="1200" height="600" style="border:1px solid #333333;"></canvas>
+	</body>
+</html>

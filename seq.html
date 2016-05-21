@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html>
+<head>
+<script type="text/javascript" src="paperjs-v0.9.25/dist/paper-full.js"></script>
+<script type="text/paperscript" canvas="Canvas">
+
+/*
+L- /= 615 614 14 - 15
+R+ /= 612 610 10 - 12
+*/
+
+	var path = new Path();
+	path.strokeColor = 'grey';
+	path.selected = true;
+
+  var SIZE = 16;
+  var x = 600;
+	var y = 300;
+
+  var start = new Point(x, y);
+  path.add(start);
+
+	var myCircle = new Path.Circle(new Point(x, y), 5);
+	myCircle.fillColor = 'grey'; 
+
+  // ---------------------
+	var n = 1;
+	var p = 0;
+	var interval = 0;
+  var seq = [15, 12, 11, 10];
+
+/*
+	function onFrame (event) 
+	{
+    seqWalk();
+		
+		if (n > seq.length - 1)
+		{
+		  event.stop();
+		}
+	}
+	*/
+
+  function seqWalk ()
+	{
+		interval = seq[n] - seq[p];
+		console.log(" int : " + interval + " | " + "seq[" + n + "]" + " " + "seq[" + p + "]");
+
+		// LEFT
+		if (interval < 0) 
+		{
+				x = x - (SIZE * (interval * -1) );
+				console.log(x, y);
+
+				// circle
+				var myCircle = new Path.Circle(new Point(x, y), 5);
+				myCircle.fillColor = 'red'; 
+		}
+		// RIGHT
+		else if (interval > 0)
+		{
+				x = x + (SIZE * interval);
+				console.log(x, y);
+
+				// circle
+				var myCircle = new Path.Circle(new Point(x, y), 5);
+				myCircle.fillColor = 'green'; 
+		}
+		else if (interval == 0) { }
+
+	  var next = new Point(x, y);
+ 	 	path.add(next);
+
+    // increment pointers
+		n++; p++;
+	}
+
+	for (i = 0; i < seq.length - 1; i++) 
+	{
+		seqWalk();
+	}
+
+</script>
+
+</head>
+	<body>
+		<canvas id="Canvas"  width="1200" height="600" style="border:1px solid #333333;"></canvas>
+	</body>
+</html>

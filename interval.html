@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html>
+<head>
+<script type="text/javascript" src="paperjs-v0.9.25/dist/paper-full.js"></script>
+<script type="text/paperscript" canvas="Canvas">
+
+	var path = new Path();
+	path.strokeColor = 'blue';
+	//path.fillColor = '#ff6060';
+	//path.selected = true;
+
+  var SIZE = 10;
+  var x = 200;
+	var y = 200;
+
+	var interval = [-3, 2, 1, -1, -2, 2, 1, -1, -2, -3, 2, 1, -1, -2, 2, 1, -1, -2, 1, -1, -2];
+	//var interval = [1, -1, -2];
+
+  var start = new Point(x, y);
+  path.add(start);
+
+  // circle start
+	/*
+	var c1 = new Path.Circle(new Point(x, y), 4);
+	c1.style = {
+			fillColor: '#ff6060',
+			strokeColor: 'black',
+			strokeWidth: 1
+	};
+	*/
+
+	var pointer = 2;
+  for(i = 0; i < interval.length; i++) {
+		randomWalk(interval[i]);
+	}
+
+	// circle end
+	/*
+	var c2 = new Path.Circle(new Point(x, y), 4);
+	c2.style = {
+			fillColor: '#222060',
+			strokeColor: 'black',
+			strokeWidth: 1
+	};
+	*/
+
+  function randomWalk (interval, i) {
+
+    if (interval > 0) {
+			if (pointer % 2 == 0) {
+				x = x + (SIZE * interval);
+				//console.log("right", x, y);
+			}
+
+			else if (pointer % 2 == 1) {
+				y = y - (SIZE * interval);
+			  //console.log("up", x, y);
+			}
+
+		}
+
+		else if (interval < 0) {
+			if (pointer % 2 == 0) {
+				x = x + (SIZE * interval);
+				//console.log("left", x, y);
+			}
+			else if (pointer % 2 == 1) {
+				y = y + (-1 * (SIZE * interval));
+				//console.log("down", x, y);
+			}
+		}
+
+	  var next = new Point(x, y);
+ 	 	path.add(next);
+
+		pointer++;
+	}
+
+</script>
+
+</head>
+	<body>
+		<div><canvas id="Canvas"  width="400" height="400" style="border:1px solid #333333;"></canvas></div>
+	</body>
+</html>
