@@ -31,7 +31,6 @@ var UdukPlot = {
           y = y + val;
           //console.log("up ", x, y);
         }
-
       }
 
       else if (val < 0) {
