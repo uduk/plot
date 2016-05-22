@@ -20,30 +20,14 @@ var UdukPlot = {
     for (var i = 0; i < interval.length; i++) {
 
       var xy = [];
-      var val = interval[i];
 
-      if (val > 0) {
-        if (pointer % 2 == 0) {
-          x = x + val;
-          //console.log("right ", x, y);
-        }
-        else if (pointer % 2 == 1) {
-          y = y + val;
-          //console.log("up ", x, y);
-        }
+      if (pointer % 2 == 0) {
+        x = x + interval[i];
       }
-
-      else if (val < 0) {
-        if (pointer % 2 == 0) {
-          x = x + val;
-          //console.log("left ", x, y);
-        }
-        else if (pointer % 2 == 1) {
-          y = y + val;
-          //console.log("down ", x, y);
-        }
+      else if (pointer % 2 == 1) {
+        y = y + interval[i];
       }
-
+   
       xy.push(x); 
       xy.push(y);
       ret.push(xy);
@@ -64,27 +48,22 @@ var UdukPlot = {
     for (var i = 0; i < interval.length; i++) {
 
       var xy = [];
-      var val = interval[i];
 
-      if (val > 0) {
+      if (interval[i] > 0) {
         if (pointer % 2 == 0) {
-          x = x + (size * val);
-          //console.log("right", x, y);
+          x = x + (size * interval[i]);
         }
         else if (pointer % 2 == 1) {
-          y = y - (size * val);
-          //console.log("up", x, y);
+          y = y - (size * interval[i]);
         }
       }
 
-      else if (val < 0) {
+      else if (interval[i] < 0) {
         if (pointer % 2 == 0) {
-          x = x + (size * val);
-          //console.log("left", x, y);
+          x = x + (size * interval[i]);
         }
         else if (pointer % 2 == 1) {
-          y = y + (-1 * (size * val));
-          //console.log("down", x, y);
+          y = y + (-1 * (size * interval[i]));
         }
       }
 
