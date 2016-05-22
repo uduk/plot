@@ -1,4 +1,3 @@
 # plot
-plotting function - paper js vexflow etc
-
+plotting function - paper js
 under development
