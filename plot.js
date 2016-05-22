@@ -2,7 +2,7 @@
 /**
 *
 * UDUK Plot 1.0
-* require: JQuery
+* 
 *
 */
 
@@ -17,9 +17,10 @@ var UdukPlot = {
     var pointer = 2;
     var ret = [];
 
-    $.each (interval, function (key, val) {
+    for (var i = 0; i < interval.length; i++) {
 
       var xy = [];
+      var val = interval[i];
 
       if (val > 0) {
         if (pointer % 2 == 0) {
@@ -49,7 +50,7 @@ var UdukPlot = {
       ret.push(xy);
 
       pointer++;
-    });
+    }
 
     return ret;
   },
@@ -61,9 +62,10 @@ var UdukPlot = {
     var pointer = 2;
     var ret = [];
 
-    $.each (interval, function (key, val) {
+    for (var i = 0; i < interval.length; i++) {
 
       var xy = [];
+      var val = interval[i];
 
       if (val > 0) {
         if (pointer % 2 == 0) {
@@ -71,7 +73,7 @@ var UdukPlot = {
           //console.log("right", x, y);
         }
         else if (pointer % 2 == 1) {
-          y = y - (size *val);
+          y = y - (size * val);
           //console.log("up", x, y);
         }
       }
@@ -92,7 +94,7 @@ var UdukPlot = {
       ret.push(xy);
 
       pointer++;
-    });
+    }
 
     return ret;
   }
