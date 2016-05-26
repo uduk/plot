@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html>
+<head>
+<script type="text/javascript" src="paper-full.min.js"></script>
+<script type="text/javascript" src="../uduk-core/sequence.js"></script>
+<script type="text/paperscript" canvas="Canvas">
+
+	var sequence = [607, 608, 610, 608, 607,  612, 613, 615, 613, 612,  615, 617, 618, 617, 615];
+	var interval = UdukSequence.toInterval(sequence);
+
+  // line
+	var Xc = new Path.Line({
+		from: [0, 600],
+		to: [1200, 600],
+		strokeColor: '#ddd'
+	});
+
+	var Yc = new Path.Line({
+		from: [600, 0],
+		to: [600, 1200],
+		strokeColor: '#ddd'
+	});
+  // line
+
+  var x = 0;
+  var y = 0;
+
+	function drawXYaxis(interval)
+	{
+    var xCanvas = 600;
+    var yCanvas = 600;
+    var SIZE = 20;
+
+		x = y = x + interval;
+    
+		xCanvas = 600 + (x * SIZE);
+    yCanvas = 600 + (y * SIZE);
+
+    //X
+    var x1 = new Path.Circle(new Point(xCanvas, 600), 4);
+    x1.fillColor = '#37a1f3';
+    x1.strokeColor = '#ddd';
+    x1.strokeWidth = 1;
+
+    //Y
+    var y1 = new Path.Circle(new Point(600, yCanvas), 4);
+    y1.fillColor = '#37a1f3';
+    y1.strokeColor = '#ddd';
+    y1.strokeWidth = 1;
+
+    /* ----------- */
+
+    xCanvas = 600 - (x * SIZE);
+    yCanvas = 600 - (y * SIZE);
+
+    //X
+    var x1 = new Path.Circle(new Point(xCanvas, 600), 4);
+    x1.fillColor = '#ff6060';
+    x1.strokeColor = '#ddd';
+    x1.strokeWidth = 1;
+
+    //Y
+    var y1 = new Path.Circle(new Point(600, yCanvas), 4);
+    y1.fillColor = '#ff6060';
+    y1.strokeColor = '#ddd';
+    y1.strokeWidth = 1;
+  }
+
+  for (var i = 0; i < interval.length; i++) {
+    drawXYaxis(interval[i]);
+  }
+
+  var y1 = new Path.Circle(new Point(600, 600), 4);
+  y1.fillColor = '#60ff60';
+  y1.strokeColor = '#ddd';
+  y1.strokeWidth = 1;
+
+ </script>
+
+</head>
+	<body>
+		<div><canvas id="Canvas" width="1200" height="1200" style="border:1px solid #ddd;"></canvas></div>
+	</body>
+</html>
