@@ -71,13 +71,14 @@
 
   console.log("Match found: [+] exact / [-] similar" );
   var foundIndex = 0;
+  var distance = 3;
   for (var t = 0; t < dbSum.length; t++) {
     if (zzz == dbSum[t]) {
       console.log("[+] index: " + t + " val: " + dbSum[t]);
       foundIndex = t;
     }
 
-    if ( (dbSum[t] - 3 < zzz) && (dbSum[t] + 3 > zzz) ) {
+    if ( (dbSum[t] - distance < zzz) && (dbSum[t] + distance > zzz) ) {
       console.log("[-] index: " + t + " val: " + dbSum[t]);
     }
   }
