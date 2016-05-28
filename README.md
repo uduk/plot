@@ -1,3 +1,3 @@
-# plot
-plotting function - paper js
+# canvas
+drawing function - paper js
 under development
