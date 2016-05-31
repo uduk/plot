@@ -2,15 +2,19 @@
 <html>
 <head>
 <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/paper.js/0.9.25/paper-full.min.js"></script>
+<script type="text/javascript" src="sequence.js"></script>
+<script type="text/javascript" src="interval.js"></script>
 <script type="text/javascript" src="util.js"></script>
 <script type="text/paperscript" canvas="Canvas">
 
-  var itpoe = [-1, 1, 1, -1, -1, 1, 1, -1, -1, -1, 1, 1, -1, -1, 1, 1, -1, -1, 1, -1, -1];
-  var oct = [1, 1, -1, -1, -1, 1, 1, -1, -1, 1, 1, 1];
-  var interval = itpoe;
+  var sequence = [408,405,407, 408,407,405, 407,408,407,405, 408,405,407, 408,407,405, 407,408,407,405, 407,408,407,405];
+
+  var interval = UdukSequence.toInterval(sequence);
+  var scaledInterval = UdukInterval.scale(interval);
 
   var steps = 3;
-  var part = UdukUtil.partition(interval, steps);
+  var part = UdukUtil.partition(scaledInterval, steps);
+  //part = UdukUtil.partition(interval, steps);
 
   for (var z = 0; z < part.length; z++) {
 
@@ -19,8 +23,8 @@
 
     var SKIP = 60;
     var SIZE = 20;
-    var xCanvas = 80 + (z * SKIP);
-    var yCanvas = 80;
+    var xCanvas = 120 + (z * SKIP);
+    var yCanvas = 120;
     xy.push([xCanvas, yCanvas]);
 
     for (var zz = 0; zz < part[z].length; zz++) {
@@ -53,7 +57,6 @@
     drawZ(xy);
   }
 
-
   function drawZ(points)
   {
     var c = new Path.Circle(points[0], 4);
@@ -67,6 +70,45 @@
     });
   }
  
+  // annotation - http://paperjs.org/examples/path-simplification/
+
+  var path;
+
+  var textItem = new PointText({
+    content: 'Click and drag to annotate.',
+    point: new Point(6, 14),
+    fillColor: 'black',
+  });
+
+  function onMouseDown(event) {
+    if (path) {
+      path.selected = false;
+    }
+
+    path = new Path({
+      segments: [event.point],
+      strokeColor: 'black',
+      fullySelected: true
+    });
+  }
+
+  function onMouseDrag(event) {
+    path.add(event.point);
+    textItem.content = 'Segment count: ' + path.segments.length;
+  }
+
+  function onMouseUp(event) {
+    var segmentCount = path.segments.length;
+
+    path.simplify(10);
+    path.fullySelected = true;
+
+    var newSegmentCount = path.segments.length;
+    var difference = segmentCount - newSegmentCount;
+    var percentage = 100 - Math.round(newSegmentCount / segmentCount * 100);
+    textItem.content = difference + ' of the ' + segmentCount + ' segments were removed. Saving ' + percentage + '%';
+  }
+
 </script>
 
 </head>
