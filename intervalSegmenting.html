@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html>
+<head>
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/paper.js/0.9.25/paper-full.min.js"></script>
+<script type="text/javascript" src="util.js"></script>
+<script type="text/paperscript" canvas="Canvas">
+
+  var itpoe = [-1, 1, 1, -1, -1, 1, 1, -1, -1, -1, 1, 1, -1, -1, 1, 1, -1, -1, 1, -1, -1];
+  var oct = [1, 1, -1, -1, -1, 1, 1, -1, -1, 1, 1, 1];
+  var interval = itpoe;
+
+  var steps = 3;
+  var part = UdukUtil.partition(interval, steps);
+
+  for (var z = 0; z < part.length; z++) {
+
+    var pointer = 2;
+    var xy = [];
+
+    var SKIP = 60;
+    var SIZE = 20;
+    var xCanvas = 80 + (z * SKIP);
+    var yCanvas = 80;
+    xy.push([xCanvas, yCanvas]);
+
+    for (var zz = 0; zz < part[z].length; zz++) {
+
+      var val = part[z][zz];
+
+      if (val > 0) {
+        if (pointer % 2 == 0) {
+          xCanvas += (val * SIZE);
+        }
+        else if (pointer % 2 == 1) {
+          yCanvas += ( (val * (-1)) * SIZE);
+        }
+      }
+
+      else if (val < 0) {
+        if (pointer % 2 == 0) {
+          xCanvas += (val * SIZE);
+        }
+        else if (pointer % 2 == 1) {
+          yCanvas += ( (val * (-1)) * SIZE);
+        }
+      }
+
+      xy.push([xCanvas, yCanvas]);
+
+      pointer++;
+    }
+
+    drawZ(xy);
+  }
+
+
+  function drawZ(points)
+  {
+    var c = new Path.Circle(points[0], 4);
+    c.fillColor = '#'+Math.floor(Math.random()*16777215).toString(16);
+    var path = new Path({
+      segments: points,
+      strokeColor: '#777',
+      strokeWidth: 3,
+      strokeCap: 'round',
+      selected: false
+    });
+  }
+ 
+</script>
+
+</head>
+	<body>
+		<div><canvas id="Canvas"  width="800" height="200" style="border:1px solid #ccc;"></canvas></div>
+	</body>
+</html>
