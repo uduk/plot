@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html>
+<head>
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/paper.js/0.9.25/paper-full.min.js"></script>
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/chroma-js/1.1.1/chroma.min.js"></script>
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.0.0-rc1/jquery.min.js"></script>
+<script type="text/javascript" src="ntc-modified.js"></script>
+
+<script type="text/javascript" src="sequence.js"></script>
+<script type="text/paperscript" canvas="Canvas">
+
+  /*
+  function drawFretboard() {
+
+    for (var x = 20; x <= 440; x+=20) {
+      for (var y = 20; y <= 120; y+=20) {
+        var c = new Path.Circle(new Point(x, y), 4);
+        c.fillColor = '#444';
+      }
+    }
+
+  }
+
+  drawFretboard();
+  */
+
+  var color = "#723abc";
+  var n_match  = ntc.name(color);
+  n_rgb        = n_match[0];
+  n_note       = n_match[1];
+  n_exactmatch = n_match[2];
+
+  // query
+  var myCircle = new Path.Circle(new Point(200, 200), 20);
+  myCircle.fillColor = color;
+
+  // nearest 
+  var myCircle = new Path.Circle(new Point(230, 200), 20);
+  myCircle.fillColor = n_rgb;
+
+  console.log(n_exactmatch + " " + n_rgb + " " + n_note);
+
+  function drawCircle (notes) {
+
+    var color = {
+      "E"  :"#ff0080",
+      "EB" :"#ff00ff",
+      "D#" :"#ff00ff",
+      "D"  :"#7a00f8",
+      "DB" :"#0402fd",
+      "C#" :"#0402fd",
+      "C"  :"#0480f4",
+      "B"  :"#03fbfd",
+      "BB" :"#03ff84",
+      "A#" :"#03ff84",
+      "A"  :"#01ff00",
+      "AB" :"#7dff00",
+      "G#" :"#7dff00",
+      "G"  :"#fffc03",
+      "GB" :"#fb7f00",
+      "F#" :"#fb7f00",
+      "F"  :"#fd0000"
+    };
+
+    var xCanvas = 100;
+    var yCanvas = 100;
+    for (var z = 0; z < notes.length; z++) {
+      var note = notes[z].toUpperCase();
+      var myCircle = new Path.Circle(new Point(xCanvas+=30, yCanvas), 20);
+      myCircle.fillColor = color[note];
+    }
+
+  }
+  /*
+  var cc = chroma.bezier(['yellow', 'red', 'black']) .scale().colors(7);
+  var cc = chroma.scale('OrRd').colors(7);
+  cc[0] -- cc[7]; //heatmap
+  */
+
+  // "balinese": "1 2b 3b 4 5 6b 7",
+  var notes = ["C", "db", "eb", "f", "g", "ab", "b"];
+  var t = [];
+  for (var s = 1; s <= 6; s++) {
+    var m = UdukSequence.toFretNote(s, notes).sort();
+    t.push(m);
+  }
+
+  for (var i = 0; i < t.length; i++)
+    console.log(t[i]);
+
+  drawCircle(notes);
+
+</script>
+
+</head>
+	<body>
+		<div><canvas id="Canvas"  width="1200" height="600" style="border:1px solid #ccc;"></canvas></div>
+	</body>
+</html>
