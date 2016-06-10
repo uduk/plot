@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html>
+<head>
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/paper.js/0.9.25/paper-full.min.js"></script>
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.0.0-rc1/jquery.min.js"></script>
+
+<script type="text/paperscript" canvas="Canvas">
+
+  /* https://en.wikipedia.org/wiki/Pitch_constellation */
+
+  function pitchConstellationAll(pitch) {
+    var x1 = 400, y1 = 100;
+    var x2 = 400, y2 = 300;
+    var r = 30;
+
+    for (var i = 0; i < pitch.length / 2; i++) {
+
+      /* Line */
+      var from = new Point(x1, y1);
+      var to = new Point(x2, y2);
+      var path = new Path.Line(from, to);
+      path.strokeColor = '#'+Math.floor(Math.random()*16777215).toString(16);
+      
+      /* Circle 1*/
+      var circle1 = new Path.Circle(new Point(x1, y1), 10);
+        circle1.style = {
+        fillColor: '#c7c7c7',
+        strokeColor: 'black',
+        strokeWidth: 1,
+        shadowColor: new Color(0, 0, 0),
+        shadowBlur: 9,
+        shadowOffset: new Point(5, 5)
+      };
+
+      var text1 = new PointText(new Point(x1, y1 + 4));
+      text1.justification = 'center';
+      text1.fillColor = '#333' ;
+      text1.fontSize = 10;
+      text1.content = pitch[i];
+
+       /* Circle 2*/
+      var circle2 = new Path.Circle(new Point(x2, y2), 10);
+        circle2.style = {
+        fillColor: '#c7c7c7',
+        strokeColor: 'black',
+        strokeWidth: 1,
+        shadowColor: new Color(0, 0, 0),
+        shadowBlur: 9,
+        shadowOffset: new Point(5, 5)
+      };
+
+      var text2 = new PointText(new Point(x2, y2 + 4));
+      text2.justification = 'center';
+      text2.fillColor = '#333' ;
+      text2.fontSize = 10;
+      text2.content = pitch[i + 6];
+
+      var group = new Group([path, circle1, text1, circle2, text2]);
+      group.rotate(r * i);
+    }
+  }
+  
+  pitchConstellationAll(["C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B"]);
+
+ 
+</script>
+
+</head>
+	<body>
+		<div><canvas id="Canvas"  width="1200" height="600" style="border:1px solid #ccc;"></canvas></div>
+	</body>
+</html>
