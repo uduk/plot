@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+<head>
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/paper.js/0.9.25/paper-full.min.js"></script>
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.0.0-rc1/jquery.min.js"></script>
+
+<script type="text/paperscript" canvas="Canvas">
+
+  
+  var x, y;
+  var rects = [];
+
+  function onMouseDown(event) {
+    x = event.point.x;
+    y = event.point.y;
+    var topLeft = new Point(x, y);
+    var rectSize = new Size(0, 0);
+    var rectangle = new Rectangle(topLeft, rectSize);
+    var path = new Path.Rectangle(rectangle);
+    path.fillColor = '#c7c7c7';
+    path.opacity = 0.8
+    rects.push(path);
+  }
+
+  function onMouseDrag(event) {
+    var from = new Point(x, y);
+    var to = new Point(event.point.x, event.point.y);
+    var r = new Rectangle(from, to);
+    var p = new Path.Rectangle(r);
+    p.fillColor = '#c7c7c7';
+    p.opacity = 0.8
+    rects.push(p);
+
+    for (var i = 0; i < rects.length - 1; i++) {
+      rects[i].remove();
+    }
+
+    rects[rects.length - 1].onDoubleClick = function(event) {
+      this.remove();
+    }
+  }
+
+</script>
+
+</head>
+	<body>
+		<div><canvas id="Canvas"  width="1200" height="600" style="border:1px solid #ccc;"></canvas></div>
+	</body>
+</html>
