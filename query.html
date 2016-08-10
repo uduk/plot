@@ -1,0 +1,149 @@
+<html>
+<body>
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/paper.js/0.9.25/paper-full.min.js"></script>
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/chroma-js/1.1.1/chroma.min.js"></script>
+<script type="text/paperscript" canvas="Canvas">
+
+  function getRandomInt(min, max) {
+    return Math.floor(Math.random() * (max - min)) + min;
+  }
+
+  function sum(arr) {
+    var c = 0;
+    for (var i = 0; i < arr.length; i++) {
+      c += arr[i];
+    }
+    return c;
+  }
+
+  function scale(interval)
+  {
+    var scale = [];	
+    for (var i = 0; i < interval.length; i++) {
+      if (interval[i] == 0) {
+        scale.push(interval[i]);
+      }
+      else if(interval[i] != 0) {
+        scale.push(interval[i]/Math.abs(interval[i]));
+      }
+    }
+    return scale;
+  }
+
+  // Generate rnd db
+  var patternSet = [];
+  for (var i = 0; i < 10; i++) {
+    var set = [];
+    for (var j = 0; j < 10; j++) {
+      var rnd = getRandomInt(-3, 3);
+      set.push(rnd);
+    }
+    patternSet.push(set);
+  }
+
+  // scaled db
+  for (var z = 0; z < patternSet.length; z++) {
+    var s = scale(patternSet[z]);
+    console.log("PatternSet[" + z + "]: " + patternSet[z] + " [scaled]: " + s);
+  }
+
+  // sum
+  var dbSum = [];
+  for (var w = 0; w < patternSet.length; w++) {
+    var c = sum(patternSet[w]);
+    dbSum.push(c);
+  }
+
+  console.log("dbSum: " + dbSum + " ***");
+
+  // Generate key
+  var key = [];
+  for (var j = 0; j < 10; j++) {
+    var rnd = getRandomInt(-4, 4);
+    key.push(rnd);
+  }
+  var scaledKey = scale(key);
+
+  console.log("---------");
+  console.log("Key: " + key + " [scaled]: " + scaledKey);
+  var zzz = sum(key);
+  console.log("Sum key: " + zzz + " *");
+
+  console.log("---------");
+  console.log("Match found: [+] exact / [-] similar" );
+  var foundIndex = 0;
+  var distance = 3;
+  for (var t = 0; t < dbSum.length; t++) {
+    if (zzz == dbSum[t]) {
+      console.log("[+] index: " + t + " val: " + dbSum[t]);
+      foundIndex = t;
+    }
+
+    if ( (dbSum[t] - distance < zzz) && (dbSum[t] + distance > zzz) ) {
+      console.log("[-] index: " + t + " val: " + dbSum[t]);
+    }
+  }
+
+  console.log("---------");
+
+  // Key
+  var c = chroma.scale('OrRd').classes([-4, -3, -2, -1, 0, 1, 2, 3, 4]);
+  for (var d = 0; d < key.length; d++) {
+    var myCircle = new Path.Circle(new Point( 20 + (30 * d), 20), 10);
+    myCircle.fillColor = c(key[d]).toString();
+    myCircle.shadowColor = new Color(0, 0, 0);
+    myCircle.shadowBlur = 12;
+    myCircle.shadowOffset = new Point(3, 3);
+  }
+
+  // text
+  var text = new PointText(new Point(20 + (30 * 11), 20));
+  text.justification = 'center';
+  text.fillColor = 'black';
+  text.content = 'Key';
+
+  // found match
+  var f = chroma.scale('RdYlBu').classes([-4, -3, -2, -1, 0, 1, 2, 3, 4]);
+  for (var d = 0; d < patternSet[foundIndex].length; d++) {
+    var myCircle = new Path.Circle(new Point( 20 + (30 * d), 60), 10);
+    myCircle.fillColor = f(key[d]).toString();
+    myCircle.shadowColor = new Color(0, 0, 0);
+    myCircle.shadowBlur = 12;
+    myCircle.shadowOffset = new Point(3, 3);
+  }
+
+  // text
+  var text = new PointText(new Point(20 + (30 * 11), 60));
+  text.justification = 'center';
+  text.fillColor = 'black';
+  text.content = 'Match (similar)';
+
+  // chroma
+  var k = chroma.limits(key, 'e', 5);
+  var q = chroma.limits(key, 'q', 5);
+  var m = chroma.limits(key, 'k', 5);
+
+  console.log("k : " + k);
+  console.log("q : " + q);
+  console.log("m : " + m);
+
+  // generate note
+  function toNote(start, interval)
+  {
+    var s = start;
+    var ret = [];
+    ret.push(s);
+    for (var i = 0; i < interval.length; i++) {
+      s += interval[i];
+      ret.push(s);
+    }
+    return ret;
+  }
+
+  console.log("Sequence [key]  : " + toNote(112, key));
+  console.log("Sequence [match]: " + toNote(112, patternSet[foundIndex]));
+  
+</script>
+  <canvas id="Canvas" width="600" height="600" style="border:1px solid #ddd;"></canvas>
+</body>
+</html>
