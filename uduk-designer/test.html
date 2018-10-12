@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>SimpleSynth</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<script type="text/javascript" src="sequence.js"></script>
+<script type="text/javascript" src="Tone.min.js"></script>
+</head>
+<body>	
+<script type="text/javascript">
+
+  function shredIT (tempo, ts, sequence, sequenceMeasure, noteMeasure) {
+    Tone.Transport.timeSignature = ts;
+    Tone.Transport.bpm.value = tempo;
+    var merge = new Tone.Merge();
+    var reverb = new Tone.Freeverb({
+      "roomSize" : 0.2,
+      "wet" : 0.3
+    });
+    merge.chain(reverb, Tone.Master);
+    var synthSettings = {
+      "oscillator": {
+        "detune": 0,
+        "type": "custom",
+        "partials" : [2, 1, 2, 2],
+        "phase": 0,
+        "volume": 0
+      },
+      "envelope": {
+        "attack": 0.005,
+        "decay": 0.3,
+        "sustain": 0.2,
+        "release": 1,
+      },
+      "portamento": 0.01,
+      "volume": -20
+    };
+    var synthL = new Tone.SimpleSynth(synthSettings).connect(merge.left);
+    var synthR = new Tone.SimpleSynth(synthSettings).connect(merge.right);
+
+    var len = sequence.length;
+    var i = 0;
+    var part = new Tone.Sequence(function(time, note){
+      synthL.triggerAttackRelease(note, noteMeasure, time);
+      synthR.triggerAttackRelease(note, noteMeasure, time);
+
+      if (i >= len - 1) {
+        Tone.Transport.stop();
+      }
+      i++;
+
+    }, sequence, sequenceMeasure).start();
+
+    Tone.Transport.start();
+  }
+
+  var s1 = [508, 510, 511, 510, 508, 507, 508, 510, 508, 507, 508, 510, 511, 408, 409, 411, 409, 408, 409, 411, 412, 411, 409, 408, 409, 411, 409, 408, 511, 510, 508, 510, 511, 510, 508, 507, 508, 510, 508, 507, 508, 510, 511, 408, 409, 411, 409, 408, 409, 411, 412, 411, 409, 408, 409, 411, 409, 408, 511, 510];
+  var playMe = [];
+  for (var i = 0; i < s1.length; i++) {
+    var p = UdukSequence.splitNote(s1[i]);  
+    var c = UdukSequence.toMIDINote(p[0], p[1]);
+    playMe.push(c);
+  }
+
+  shredIT (160, [4, 4], playMe, "16n", "8n");
+
+</script>
+</body>
+</html>

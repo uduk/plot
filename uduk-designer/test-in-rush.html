@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+  <script type="text/javascript" src="Tone.min.js"></script>
+</head>
+<body>	
+    <script id="ToneCode" type="text/javascript">
+
+    function shuffle(array) {
+    var m = array.length, t, i;
+    // While there remain elements to shuffle…
+    while (m) {
+      // Pick a remaining element…
+      i = Math.floor(Math.random() * m--);
+      // And swap it with the current element.
+      t = array[m];
+      array[m] = array[i];
+      array[i] = t;
+    }
+    return array;
+    }
+
+    Tone.Transport.bpm.value = 120;
+
+    var feedbackDelay = new Tone.PingPongDelay({
+      "delayTime" : "4n",
+      "feedback" : 0.6,
+      "wet" : 0.5
+    }).toMaster();
+
+    // Player
+    /* https://www.youtube.com/watch?v=ZJbXynBJoD4 */
+    var player = new Tone.Player("./1.mp3", function(){
+      document.getElementById("buttonPlay").disabled = false;
+      document.getElementById("buttonPlay").innerHTML="Play";
+    }).connect(feedbackDelay).toMaster();
+
+    // Metronome
+    var snare = new Tone.NoiseSynth({
+        "volume" : -5,
+        "envelope" : {
+        "attack" : 0.001,
+        "decay" : 0.2,
+        "sustain" : 0
+        },
+        "filterEnvelope" : {
+        "attack" : 0.001,
+        "decay" : 0.1,
+        "sustain" : 0
+      }
+    }).toMaster();
+
+    var snarePart = new Tone.Loop(function(time){
+      snare.triggerAttack(time);
+      console.log(time);
+    }, "4n").start("4n");
+
+    var merge = new Tone.Merge();
+    var reverb = new Tone.Freeverb({
+      "roomSize" : 0.2,
+      "wet" : 0.3
+    });
+
+    merge.chain(reverb, Tone.Master);
+
+    var synthSettings = {
+      "oscillator": {
+      "detune": 0,
+      "type": "custom",
+      "partials" : [2, 1, 2, 2],
+      "phase": 0,
+      "volume": 0
+    },
+      "envelope": {
+      "attack": 0.005,
+      "decay": 0.3,
+      "sustain": 0.2,
+      "release": 1,
+    },
+      "portamento": 0.01,
+      "volume": -18
+    };
+
+    var synthL = new Tone.SimpleSynth(synthSettings).connect(merge.left);
+    var synthR = new Tone.SimpleSynth(synthSettings).connect(merge.right);
+
+    var seq = new Tone.Sequence(function(time, note){
+      synthL.triggerAttackRelease(note, "16n", time);
+      synthR.triggerAttackRelease(note, "16n", time);
+    }, ["E4", "F4", "B4", "C5", "D5", "F4", "E4", "C5", "B4", "F4", "C5", "B4"], "16n").start("+23.370");
+    seq.loop = true;
+    //seq.playbackRate = 2;
+
+    var patternSeq = ["C4", "D4", "E4", "F4", "G4", "A4", "B4"];
+    var shuffledSeq = shuffle(patternSeq);
+    var pattern = new Tone.Pattern(function(time, note){
+      shuffledSeq = shuffle(patternSeq);
+      synthL.triggerAttackRelease(note, "4n", time);
+      synthR.triggerAttackRelease(note, "4n", time);
+      console.log(pattern.index + " " + pattern.value + " [shuffledPattern:] " + pattern.events);
+    }, shuffledSeq, "randomWalk").start("+7.041").stop("22.101");
+    //pattern.humanize = true;
+
+    function play() {
+      Tone.Transport.start();
+      player.start("+1.84");
+      document.getElementById("buttonStop").disabled = false;
+      document.getElementById("buttonPlay").disabled = true;
+    }
+
+    function stop() {
+      Tone.Transport.stop();
+      player.stop();
+      document.getElementById("buttonPlay").disabled = false;
+      document.getElementById("buttonStop").disabled = true;
+    }
+
+    </script>
+
+    <button id="buttonPlay" disabled onclick="play()">Loading ...</button>
+    <button id="buttonStop" disabled onclick="stop()">Stop</button>
+  </body>
+</html>

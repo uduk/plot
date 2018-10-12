@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+  <script type="text/javascript" src="sequence.js"></script>
+  <script type="text/javascript" src="interval.js"></script>
+  <script type="text/javascript" src="harmonizer.js"></script>
+  <script type="text/javascript" src="Tone.min.js"></script>
+</head>
+<body>	
+    <script id="ToneCode" type="text/javascript">
+
+
+    function unique(arr) {
+      var ret = [];
+      for (var i = 0; i < arr.length; i++) {
+        var val = arr[i];
+        var c = 0;
+        ret.push(val);
+        for (var j = 0; j < ret.length; j++) {
+          if (val == ret[j]) {
+            c++;
+          }
+          if (c > 1) {
+            ret.pop(val)
+          }
+        }
+      }
+      return ret;
+    }
+
+    function shuffle(array) {
+    var m = array.length, t, i;
+    // While there remain elements to shuffle…
+    while (m) {
+      // Pick a remaining element…
+      i = Math.floor(Math.random() * m--);
+      // And swap it with the current element.
+      t = array[m];
+      array[m] = array[i];
+      array[i] = t;
+    }
+    return array;
+    }
+
+    Tone.Transport.bpm.value = 81;
+
+    //will play as soon as it's loaded
+    var play1 = new Tone.Player({
+        "url" : "./h.mp3",
+        "autostart" : true,
+        "loop" : false
+        }).toMaster();
+
+    // Player
+    /* https://www.youtube.com/watch?v=ZJbXynBJoD4 */
+    var player = new Tone.Player("./2.mp3", function(){
+      document.getElementById("buttonPlay").disabled = false;
+      document.getElementById("buttonPlay").innerHTML="Play";
+    }).toMaster();
+    player.loop=true;
+
+    var merge = new Tone.Merge();
+    var reverb = new Tone.Freeverb({
+      "roomSize" : 0.2,
+      "wet" : 0.3
+    });
+
+    merge.chain(reverb, Tone.Master);
+
+    var synthSettings = {
+      "oscillator": {
+      "detune": 0,
+      "type": "custom",
+      "partials" : [2, 1, 2, 2],
+      "phase": 0,
+      "volume": 0
+    },
+      "envelope": {
+      "attack": 0.005,
+      "decay": 0.3,
+      "sustain": 0.2,
+      "release": 1,
+    },
+      "portamento": 0.01,
+      "volume": -15
+    };
+
+    var bass = new Tone.MonoSynth({
+			"volume" : -10,
+			"envelope" : {
+				"attack" : 0.1,
+				"decay" : 0.3,
+				"release" : 2,
+			},
+			"filterEnvelope" : {
+				"attack" : 0.001,
+				"decay" : 0.01,
+				"sustain" : 0.5,
+				"baseFrequency" : 200,
+				"octaves" : 2.6
+			}
+		}).toMaster();
+
+    var playMe = BassIt();
+		var bassPart = new Tone.Sequence(function(time, note){
+			bass.triggerAttackRelease(note, "8n", time);
+      console.log(shuffle(playMe));
+		}, playMe).start(+1.59);
+
+		bassPart.probability = 0.9;
+
+    function play() {
+      Tone.Transport.start();
+      player.start("+1.84");
+      document.getElementById("buttonStop").disabled = false;
+      document.getElementById("buttonPlay").disabled = true;
+    }
+
+    function stop() {
+      Tone.Transport.stop();
+      player.stop();
+      document.getElementById("buttonPlay").disabled = false;
+      document.getElementById("buttonStop").disabled = true;
+    }
+
+    function BassIt() {
+      var numbers      = [1, 2, 3, 4, 5, 6, 7, 8, 9];
+      var weightings   = [0.1,0.075,0.1,0.15,0.2,0.15,0.1,0.075,0.05];
+      var matrix = [];
+      matrix.push(numbers);
+      matrix.push(weightings);
+      var sm = UdukHarmonizer.stochasticMatrix(matrix, 9);
+      var test = [];
+      for(var j = 0; j < sm.length; j++) {
+        test.push("60" + sm[j]);
+      }
+
+      var playMe = [];
+      for (var i = 0; i < test.length; i++) {
+        var p = UdukSequence.splitNote(test[i]);  
+        var c = UdukSequence.toMIDINote(p[0], p[1]);
+        playMe.push(c);
+      }
+      return playMe;
+    }
+
+    </script>
+
+    <button id="buttonPlay" disabled onclick="play()">Loading ...</button>
+    <button id="buttonStop" disabled onclick="stop()">Stop</button>
+  </body>
+</html>
