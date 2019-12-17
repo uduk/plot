@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html>
+<head>
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.0.0-rc1/jquery.min.js"></script>
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/paper.js/0.9.25/paper-full.min.js"></script>
+<script type="text/javascript" src="sequence.js"></script>
+<script type="text/javascript" src="plot.js"></script>
+<script type="text/paperscript" canvas="Canvas">
+
+	var awe = [607, 603, 600, 607, 603, 600, 607, 603, 600, 607, 603, 600, 607, 603, 600, 607, 608, 605, 600, 608, 605, 600, 608, 605, 600, 608, 605, 600, 610, 607, 600, 608, 607, 604, 600, 607, 604, 600, 607, 604, 600, 607, 604, 600, 607, 604, 600, 607, 610, 607, 600, 610, 607, 600, 610, 607, 600, 610, 607, 600, 613, 607, 600];
+
+  var interval = UdukSequence.toInterval(awe);
+
+  var SIZE = 20;
+
+  function drawLine (width, height)
+  {
+    var Xc = new Path.Line({
+          from: [0, height/2],
+          to: [width, height/2],
+          strokeColor: '#ddd'
+    });
+    var Yc = new Path.Line({
+          from: [width/2, 0],
+          to: [width/2, height],
+          strokeColor: '#ddd'
+    });
+  }
+
+  function getSize (canvas)
+  {
+    var size = [];
+    var canvas = document.getElementById(canvas);
+    var width = canvas.width;
+    var height = canvas.height;
+    size.push(width);
+    size.push(height);
+    return size;
+  }
+
+  var s = getSize("Canvas");
+  var width = s[0];
+  var height = s[1];
+
+  drawLine(width, height);
+  
+  ////////////////////////////////////////////////////////
+
+	function drawXY (x, y, width, height)
+	{
+    // center canvas
+    var xCanvas = width/2;
+    var yCanvas = height/2;
+
+		xCanvas += (x * SIZE);
+		yCanvas += (y * SIZE); // (y * -SIZE)
+		//console.log(" [" + x + "," + y + "] " + xCanvas + " " + yCanvas);
+
+		// circle
+		var c1 = new Path.Circle(new Point(xCanvas, yCanvas), 4);
+		c1.style = {
+				fillColor: '#'+Math.floor(Math.random()*16777215).toString(16),
+				strokeColor: 'grey',
+				strokeWidth: 1
+		};
+	}
+
+  var xyArray = UdukPlot.toCartesian(interval);
+  $.each (xyArray, function (key, val) {
+    var x = val[0];
+    var y = val[1];
+    drawXY (x, y, width, height);
+	});
+
+  // fractal
+
+    var path = new Path();
+    path.strokeColor = '#444';
+
+    var xCanvas = width/2;
+    var yCanvas = height/2;
+
+    var xyArray = UdukPlot.toFractal(interval, xCanvas, yCanvas, SIZE);
+
+    var start = new Point(xCanvas, yCanvas);
+    path.add(start);
+
+    $.each (xyArray, function (key, val) {
+      var x = val[0];
+      var y = val[1];
+      console.log(x, y);
+      var next = new Point(x, y);
+      path.add(next);
+    });
+
+</script>
+
+</head>
+	<body>
+		<div><canvas id="Canvas"  width="300" height="300" style="border:1px solid #ccc;"></canvas></div>
+	</body>
+</html>
